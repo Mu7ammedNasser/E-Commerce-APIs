@@ -1,0 +1,49 @@
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+
+# Rider / VS Code / VS
+.idea/
+.vscode/
+.vs/
+
+# NuGet
+*.nupkg
+packages/
+!**/packages/build/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# EF Core local database files (if any)
+*.mdf
+*.ldf
+*.db
+*.db-shm
+*.db-wal
+
+# App secrets/config overrides
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+.env
+.env.*
+
+# Publish output
+publish/
+artifacts/
+
+# Test output
+TestResults/
+coverage/
+*.coverage
+*.trx
