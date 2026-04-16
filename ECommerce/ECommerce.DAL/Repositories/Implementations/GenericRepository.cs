@@ -10,7 +10,7 @@ namespace ECommerce.DAL
         }
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-           return await _context.Set<T>().AsNoTracking().ToListAsync();
+            return await _context.Set<T>().AsNoTracking().ToListAsync();
         }
         public async Task<T?> GetByIdAsync(int id)
         {
@@ -18,15 +18,11 @@ namespace ECommerce.DAL
         }
         public async Task AddAsync(T entity)
         {
-             await _context.Set<T>().AddAsync(entity);
+            await _context.Set<T>().AddAsync(entity);
         }
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(T entity)
         {
-            var entity = await _context.Set<T>().FindAsync(id);
-            if(entity is not null)
-            {
-                _context.Set<T>().Remove(entity);
-            }
+            _context.Set<T>().Remove(entity);
         }
     }
 }

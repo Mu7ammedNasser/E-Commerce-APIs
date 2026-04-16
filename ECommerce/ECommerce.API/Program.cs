@@ -1,4 +1,5 @@
 
+using ECommerce.BLL;
 using ECommerce.DAL;
 using ECommerce.DAL.Repositories.Implementations;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,10 @@ namespace ECommerce.API
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
+            // Add DAL services to the container using the extension method defined in the DAL project to keep the Program.cs clean and maintainable that contains all the necessary registrations for the DAL layer, including the DbContext and repositories.
             builder.Services.AddDALServices(builder.Configuration);
+
+            builder.Services.AddBLLServices();
 
             var app = builder.Build();
 

@@ -4,10 +4,10 @@
     {
         private readonly ECommerceDbContext _context;    
 
-        public IProductRepository Products { get; }
-        public ICategoryRepository Categories { get; }
-        public ICartRepository Carts { get; }
-        public IOrderRepository Orders { get; }
+        public IProductRepository ProductsRepository { get; }
+        public ICategoryRepository CategoriesRepository { get; }
+        public ICartRepository CartsRepository { get; }
+        public IOrderRepository OrdersRepository { get; }
 
         public UnitOfWork(ECommerceDbContext context,
                             IProductRepository productRepository,
@@ -18,10 +18,10 @@
             
         {
             _context = context;
-            Products = productRepository;
-            Categories = categoryRepository;
-            Carts = cartRepository;
-            Orders = orderRepository;
+            ProductsRepository = productRepository;
+            CategoriesRepository = categoryRepository;
+            CartsRepository = cartRepository;
+            OrdersRepository = orderRepository;
 
         }
 

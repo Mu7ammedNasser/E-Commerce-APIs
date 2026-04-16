@@ -1,13 +1,12 @@
-﻿using ECommerce.DAL;
-
-namespace ECommerce
+﻿
+namespace ECommerce.DAL
 {
     public interface IUnitOfWork : IDisposable
     {
-        IProductRepository Products { get; }
-        ICategoryRepository Categories { get; }
-        ICartRepository Carts { get; }
-        IOrderRepository Orders { get; }
+        IProductRepository ProductsRepository { get; }
+        ICategoryRepository CategoriesRepository { get; }
+        ICartRepository CartsRepository { get; }
+        IOrderRepository OrdersRepository { get; }
         Task SaveAsync();
     }
 }
