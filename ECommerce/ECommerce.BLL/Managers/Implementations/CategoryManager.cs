@@ -6,16 +6,14 @@ namespace ECommerce.BLL
     public class CategoryManager : ICategoryManager
     {
         private readonly IUnitOfWork _unitOfWork;
-
         public CategoryManager(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-        }  
+        }
 
         public async Task<GeneralResult<IEnumerable<CategoryDto>>> GetAllCategoriesAsync()
         {
             var categories = await _unitOfWork.CategoriesRepository.GetAllAsync();
-
             var data = categories.Select(c => new CategoryDto
             {
                 Id = c.Id,
@@ -23,7 +21,6 @@ namespace ECommerce.BLL
                 Description = c.Description,
                 ImageUrl = c.ImageUrl
             });
-
             return GeneralResult<IEnumerable<CategoryDto>>.Success(data);
         }
 
@@ -34,7 +31,6 @@ namespace ECommerce.BLL
             {
                 return GeneralResult<CategoryDto>.NotFound(message: "Category not found.");
             }
-
             var data = new CategoryDto
             {
                 Id = category.Id,
@@ -43,26 +39,31 @@ namespace ECommerce.BLL
                 ImageUrl = category.ImageUrl
             };
             return GeneralResult<CategoryDto>.Success(data);
-
         }
 
-
-        public async Task<GeneralResult> CreateCategoryAsync(CreateCategoryDto createCategoryDto)
+        public async Task<GeneralResult<CategoryDto>> CreateCategoryAsync(CreateCategoryDto createCategoryDto)
         {
             var exists = await _unitOfWork.CategoriesRepository.ExistsByNameAsync(createCategoryDto.Name);
             if (exists)
             {
-                return GeneralResult.Failure(message: "A category with the same name already exists.");
+                return GeneralResult<CategoryDto>.Failure(message: "A category with the same name already exists.");
             }
-
             var Category = new Category
             {
                 Name = createCategoryDto.Name,
                 Description = createCategoryDto.Description,
+               
             };
             await _unitOfWork.CategoriesRepository.AddAsync(Category);
             await _unitOfWork.SaveAsync();
-            return GeneralResult.Success("Category created successfully.");
+            var data = new CategoryDto
+            {
+                Id = Category.Id,
+                Name = Category.Name,
+                Description = Category.Description,
+                ImageUrl = Category.ImageUrl
+            };
+            return GeneralResult<CategoryDto>.Success(data, "Category created successfully.");
         }
 
         public async Task<GeneralResult> DeleteCategoryAsync(int id)
@@ -78,22 +79,25 @@ namespace ECommerce.BLL
             return GeneralResult.Success("Category deleted successfully.");
         }
 
-        public async Task<GeneralResult> UpdateCategoryAsync(int id, UpdateCategoryDto updateCategoryDto)
+        public async Task<GeneralResult<CategoryDto>> UpdateCategoryAsync(int id, UpdateCategoryDto updateCategoryDto)
         {
             var category = await _unitOfWork.CategoriesRepository.GetByIdAsync(id);
             if (category == null)
             {
-                return GeneralResult.NotFound(message: "Category not found.");
+                return GeneralResult<CategoryDto>.NotFound(message: "Category not found.");
             }
-
             category.Name = updateCategoryDto.Name;
             category.Description = updateCategoryDto.Description;
-
             await _unitOfWork.SaveAsync();
-            return GeneralResult.Success("Category updated successfully.");
+            var data = new CategoryDto
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description,
+                ImageUrl = category.ImageUrl
+            };
+            return GeneralResult<CategoryDto>.Success(data, "Category updated successfully.");
         }
-
-      
     }
 }
 
