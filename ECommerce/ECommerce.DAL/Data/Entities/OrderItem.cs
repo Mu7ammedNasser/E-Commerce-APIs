@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ECommerce.DAL
+﻿namespace ECommerce.DAL
 {
     public class OrderItem : IAuditable
     {
         // ------------------------------------------------------------- Properties
         public int Id { get; set; }
         public int Quantity { get; set; }
+        public decimal UnitPrice { get; set; }
 
         // ------------------------------------------------------------- Relationships
         public int ProductId { get; set; }
@@ -19,7 +14,7 @@ namespace ECommerce.DAL
         public Order Order { get; set; } = null!;
 
         // ------------------------------------------------------------- Auditing
-        public DateTime CreatedAt { get ; set ; }
-        public DateTime? UpdatedAt { get ; set ; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }

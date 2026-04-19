@@ -12,6 +12,9 @@ namespace ECommerce.BLL
         public static IServiceCollection AddBLLServices(this IServiceCollection services)
         {
             services.AddScoped<ICategoryManager, CategoryManager>();
+            services.AddScoped<IProductManager, ProductManager>();
+            services.AddScoped<ICartManager, CartManager>();
+            services.AddScoped<IOrderManager, OrderMnager>();
             return services;
         }
 

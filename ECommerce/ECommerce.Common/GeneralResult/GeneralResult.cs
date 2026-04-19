@@ -9,6 +9,8 @@ namespace ECommerce.Common
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public Dictionary<string, List<Errors>> Errors { get; set; } = null!;
+
+        
         public static GeneralResult Success(string message = "Operation completed successfully.")
             => new() { IsSuccess = true, Message = message };
         public static GeneralResult Failure(string message = "Operation failed.")

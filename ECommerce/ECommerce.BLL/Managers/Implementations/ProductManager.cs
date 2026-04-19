@@ -28,11 +28,18 @@ namespace ECommerce.BLL
 
         public async Task<GeneralResult<ProductDto>> CreateProductAsync(CreateProductDto createProductDto)
         {
-            var Exist = await _unitOfWork.ProductsRepository.ExistsByNameAsync(createProductDto.Name);
-            if (Exist)
+            var ProductExist = await _unitOfWork.ProductsRepository.ExistsByNameAsync(createProductDto.Name);
+            if (ProductExist)
             {
                 return GeneralResult<ProductDto>.Failure("Product with the same name already exists.");
             }
+
+            var CategoryExist = await _unitOfWork.CategoriesRepository.GetByIdAsync(createProductDto.CategoryId);
+            if (CategoryExist is null)
+            {
+                return GeneralResult<ProductDto>.Failure("Invalid CategoryId.");
+            }
+
             var newProduct = new Product
             {
                 Name = createProductDto.Name,

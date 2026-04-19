@@ -21,5 +21,7 @@ namespace ECommerce.DAL.Repositories.Implementations
                            .Include(ci => ci.Product)
                            .FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == productId);
         }
+
+
     }
 }
