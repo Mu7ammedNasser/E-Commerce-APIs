@@ -6,11 +6,11 @@ namespace ECommerce.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class CategoriesController : ControllerBase
     {
         private readonly ICategoryManager _categoryManager;
 
-        public CategoryController(ICategoryManager categoryManager)
+        public CategoriesController(ICategoryManager categoryManager)
         {
             _categoryManager = categoryManager;
         }

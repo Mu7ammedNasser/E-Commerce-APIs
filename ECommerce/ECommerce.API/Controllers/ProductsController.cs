@@ -6,11 +6,11 @@ namespace ECommerce.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductsController : ControllerBase
     {
         private readonly IProductManager _productManager;
 
-        public ProductController(IProductManager productManager)
+        public ProductsController(IProductManager productManager)
         {
             _productManager = productManager;
         }
