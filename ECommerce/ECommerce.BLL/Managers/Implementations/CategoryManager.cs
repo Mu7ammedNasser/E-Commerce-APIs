@@ -79,6 +79,7 @@ namespace ECommerce.BLL
             return GeneralResult.Success("Category deleted successfully.");
         }
 
+
         public async Task<GeneralResult<CategoryDto>> UpdateCategoryAsync(int id, UpdateCategoryDto updateCategoryDto)
         {
             var category = await _unitOfWork.CategoriesRepository.GetByIdAsync(id);
@@ -97,6 +98,22 @@ namespace ECommerce.BLL
                 ImageUrl = category.ImageUrl
             };
             return GeneralResult<CategoryDto>.Success(data, "Category updated successfully.");
+        }
+
+        public async Task<GeneralResult> PatchCategoryAsync(int id, PatchCategoryDto dto)
+        {
+            var category = await _unitOfWork.CategoriesRepository.GetByIdAsync(id);
+            if (category is null)
+                return GeneralResult.NotFound("Category not found.");
+
+            if (dto.Name is not null)
+                category.Name = dto.Name;
+
+            if (dto.Description is not null)
+                category.Description = dto.Description;
+
+            await _unitOfWork.SaveAsync();
+            return GeneralResult.Success("Category updated successfully.");
         }
     }
 }

@@ -3,6 +3,7 @@ using ECommerce.BLL;
 using ECommerce.DAL;
 using ECommerce.DAL.Repositories.Implementations;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 namespace ECommerce.API
 {
@@ -28,6 +29,7 @@ namespace ECommerce.API
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.MapScalarApiReference();
             }
 
             app.UseHttpsRedirection();

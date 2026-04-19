@@ -8,6 +8,8 @@ namespace ECommerce.BLL
         Task<GeneralResult<CategoryDto>> GetCategoryByIdAsync(int id);
         Task<GeneralResult<CategoryDto>> CreateCategoryAsync(CreateCategoryDto createCategoryDto);
         Task<GeneralResult<CategoryDto>> UpdateCategoryAsync(int id, UpdateCategoryDto updateCategoryDto);
+
+        Task<GeneralResult> PatchCategoryAsync(int id, PatchCategoryDto dto);
         Task<GeneralResult> DeleteCategoryAsync(int id);
     }
 }

@@ -119,5 +119,55 @@ namespace ECommerce.BLL
             return GeneralResult<ProductDto>.Success(data, "Product updated successfully.");
 
         }
+
+        public async Task<GeneralResult<PatchProductDto>> PatchProductAsync(int id, PatchProductDto dto)
+        {
+            var product = await _unitOfWork.ProductsRepository.GetByIdAsync(id);
+            if (product == null)
+                return GeneralResult<PatchProductDto>.NotFound("Product Not Found.");
+
+            if (dto.Name is not null)
+                product.Name = dto.Name;
+
+            if (dto.Description is not null)
+                product.Description = dto.Description;
+
+            if (dto.Price is not null)
+                product.Price = dto.Price ?? 0;
+
+            if (dto.ProductsInStock is not null)
+                product.ProductsInStock = dto.ProductsInStock ?? 0;
+
+            if (dto.CategoryId is not null)
+            {
+                var categoryExist = await _unitOfWork.CategoriesRepository.GetByIdAsync(dto.CategoryId ?? 0);
+                if (categoryExist == null)
+                {
+                    return GeneralResult<PatchProductDto>.NotFound("Category not found.");
+                }
+                product.CategoryId = dto.CategoryId ?? 0;
+            }
+
+            await _unitOfWork.SaveAsync();
+            var data = new PatchProductDto
+            {
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                ProductsInStock = product.ProductsInStock,
+                CategoryId = product.CategoryId
+            };
+            return GeneralResult<PatchProductDto>.Success(data, "Product patched successfully.");
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
