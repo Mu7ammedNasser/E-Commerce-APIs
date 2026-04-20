@@ -17,12 +17,12 @@ namespace ECommerce.BLL
             var data = result.Select(P => new ProductDto
             {
                 Id = P.Id,
-                Name = P.Name,
+                Name = P.Name,  
                 Description = P.Description,
                 Price = P.Price,
                 ProductsInStock = P.ProductsInStock,
                 ImageUrl = P.ImageUrl
-            });
+            }).ToList();
             return GeneralResult<IEnumerable<ProductDto>>.Success(data);
         }
 

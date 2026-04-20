@@ -1,15 +1,17 @@
 
+using ECommerce.API.Data;
 using ECommerce.BLL;
 using ECommerce.DAL;
-using ECommerce.DAL.Repositories.Implementations;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 
 namespace ECommerce.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +25,50 @@ namespace ECommerce.API
 
             builder.Services.AddBLLServices();
 
+            builder.Services.AddIdentityCore<ApplicationUser>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 6;
+            })
+                .AddRoles<ApplicationRole>()
+                .AddEntityFrameworkStores<ECommerceDbContext>()
+                .AddSignInManager()
+                .AddDefaultTokenProviders();
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+                {
+                    var jwt = builder.Configuration.GetSection("Jwt");
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+
+                        ValidIssuer = jwt["Issuer"],
+                        ValidAudience = jwt["Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwt["Key"]!)),
+                        ClockSkew = TimeSpan.Zero // Optional: reduce default clock skew of 5 minutes
+                    };
+
+                });
+
+            builder.Services.AddAuthorization();
+
+
+
+
             var app = builder.Build();
+            await IdentitySeeder.SeedAsync(app.Services);
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -34,6 +79,7 @@ namespace ECommerce.API
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

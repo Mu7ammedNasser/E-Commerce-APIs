@@ -1,5 +1,6 @@
 ﻿using ECommerce.BLL;
 using ECommerce.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
@@ -14,7 +15,6 @@ namespace ECommerce.API.Controllers
         {
             _productManager = productManager;
         }
-
         [HttpGet]
         public async Task<ActionResult<GeneralResult<IEnumerable<ProductDto>>>> GetAll()
         {
@@ -38,6 +38,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<GeneralResult<ProductDto>>> Create([FromBody] CreateProductDto dto)
         {
             var result = await _productManager.CreateProductAsync(dto);
@@ -49,6 +50,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<GeneralResult<ProductDto>>> Update(int id, [FromBody] UpdateProductDto dto)
         {
             var result = await _productManager.UpdateProductAsync(id, dto);
@@ -60,6 +62,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPatch("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<GeneralResult<PatchProductDto>>> PartialUpdate(int id, [FromBody] PatchProductDto dto)
         {
             var result = await _productManager.PatchProductAsync(id, dto);
@@ -71,6 +74,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<GeneralResult>> Delete(int id)
         {
             var result = await _productManager.DeleteProductAsync(id);

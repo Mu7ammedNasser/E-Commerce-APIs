@@ -138,7 +138,7 @@ namespace ECommerce.BLL
             var cartDto = new CartDto
             {
                 Id = cart.Id,
-                UserId = cart.User.Id,
+                UserId = cart.UserId,
                 TotalItems = cart.CartItems.Sum(ci => ci.Quantity),
                 TotalPrice = cart.CartItems.Sum(ci => ci.Quantity * (ci.Product?.Price ?? 0)),
 

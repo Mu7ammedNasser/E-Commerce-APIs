@@ -1,12 +1,15 @@
 ﻿using ECommerce.BLL;
 using ECommerce.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ECommerce.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CartsController : ControllerBase
     {
         private readonly ICartManager _cartManager;
@@ -15,10 +18,12 @@ namespace ECommerce.API.Controllers
             _cartManager = cartManager;
         }
 
-        [HttpGet("{userId:string}")]
-        public async Task<ActionResult<GeneralResult<IEnumerable<CartDto>>>> GetCart(string userId)
+        [HttpGet()]
+        public async Task<ActionResult<GeneralResult<IEnumerable<CartDto>>>> GetCart()
         {
-            var result = await _cartManager.GetCartByUserIdAsync(userId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var result = await _cartManager.GetCartByUserIdAsync(userId!);
             if (!result.IsSuccess)
             {
                 return NotFound($"No cart found for user with id {userId}.");
@@ -26,10 +31,12 @@ namespace ECommerce.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("{userId:string}/items")]
-        public async Task<ActionResult<GeneralResult>> AddItemToCart(string userId, [FromBody] AddToCartDto cartItem)
+        [HttpPost("items")]
+        public async Task<ActionResult<GeneralResult>> AddItemToCart( [FromBody] AddToCartDto cartItem)
         {
-            var result = await _cartManager.AddToCartAsync(userId, cartItem);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var result = await _cartManager.AddToCartAsync(userId!, cartItem);
             if (!result.IsSuccess)
             {
                 return BadRequest(result.Message);
@@ -37,10 +44,12 @@ namespace ECommerce.API.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("{userId:string}/items/{productId:int}")]
-        public async Task<ActionResult<GeneralResult>> RemoveItemFromCart(string userId, int productId)
+        [HttpDelete("items/{productId:int}")]
+        public async Task<ActionResult<GeneralResult>> RemoveItemFromCart( int productId)
         {
-            var result = await _cartManager.RemoveFromCartAsync(userId, productId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var result = await _cartManager.RemoveFromCartAsync(userId!, productId);
             if (!result.IsSuccess)
             {
                 return BadRequest(result.Message);
@@ -48,19 +57,23 @@ namespace ECommerce.API.Controllers
             return Ok(result);
         }
 
-        [HttpPut("{userId}/items")]
-        public async Task<ActionResult<GeneralResult<CartDto>>> UpdateQuantity(string userId, [FromBody] UpdateCartItemQuantityDto dto)
+        [HttpPut("items")]
+        public async Task<ActionResult<GeneralResult<CartDto>>> UpdateQuantity( [FromBody] UpdateCartItemQuantityDto dto)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             var result = await _cartManager.UpdateQuantityAsync(userId, dto);
 
             if (!result.IsSuccess) return BadRequest(result);
             return Ok(result);
         }
 
-        [HttpDelete("{userId:string}")]
-        public async Task<ActionResult<GeneralResult>> ClearCart(string userId)
+        [HttpDelete()]
+        public async Task<ActionResult<GeneralResult>> ClearCart()
         {
-            var result = await _cartManager.ClearCartAsync(userId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var result = await _cartManager.ClearCartAsync(userId!);
             if (!result.IsSuccess)
             {
                 return BadRequest(result.Message);

@@ -1,5 +1,6 @@
 ﻿using ECommerce.BLL;
 using ECommerce.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
@@ -35,6 +36,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<GeneralResult<CategoryDto>>> Create([FromBody] CreateCategoryDto dto)
         {
             var result = await _categoryManager.CreateCategoryAsync(dto);
@@ -44,6 +46,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<GeneralResult<CategoryDto>>> Update(int id, [FromBody] UpdateCategoryDto dto)
         {
             var result = await _categoryManager.UpdateCategoryAsync(id, dto);
@@ -53,6 +56,7 @@ namespace ECommerce.API.Controllers
 
         }
         [HttpPatch("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<GeneralResult<CategoryDto>>> PartialUpdate(int id, [FromBody] PatchCategoryDto dto)
         {
             var result = await _categoryManager.PatchCategoryAsync(id, dto);
@@ -62,6 +66,7 @@ namespace ECommerce.API.Controllers
 
         }
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<GeneralResult>> Delete(int id)
         {
             var result = await _categoryManager.DeleteCategoryAsync(id);

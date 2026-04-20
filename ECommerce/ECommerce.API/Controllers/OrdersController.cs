@@ -1,12 +1,14 @@
 ﻿using ECommerce.BLL;
 using ECommerce.Common;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ECommerce.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OrdersController : ControllerBase
     {
 
@@ -16,6 +18,7 @@ namespace ECommerce.API.Controllers
         {
             _orderManager = orderManager;
         }
+
         [HttpPost]
         public async Task<ActionResult<GeneralResult<OrderDto>>> Create([FromBody] CreateOrderDto dto)
         {
@@ -25,10 +28,12 @@ namespace ECommerce.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("user/{userId}")]
-        public async Task<ActionResult<GeneralResult<IEnumerable<OrderDto>>>> GetOrdersByUserId(string userId)
+        [HttpGet("user/{userId:alpha}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<GeneralResult<IEnumerable<OrderDto>>>> GetOrdersByUserId()
         {
-            var result = await _orderManager.GetOrdersByUserIdAsync(userId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _orderManager.GetOrdersByUserIdAsync(userId!);
             return Ok(result);
         }
 
@@ -40,8 +45,6 @@ namespace ECommerce.API.Controllers
             if (!result.IsSuccess) return NotFound(result);
             return Ok(result);
         }
-
-
 
 
     }
