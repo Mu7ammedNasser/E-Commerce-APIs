@@ -159,6 +159,38 @@ namespace ECommerce.BLL
             };
             return GeneralResult<PatchProductDto>.Success(data, "Product patched successfully.");
         }
+
+        public async Task<GeneralResult<PageResult<ProductDto>>> GetPagedProductsAsync(ProductFilterParameters pagination)
+        {
+            var (items,totalCount) =await _unitOfWork.ProductsRepository.GetPagedAsync(pagination);
+            var dtoItems = items.Select(p => new ProductDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                ProductsInStock = p.ProductsInStock,
+                ImageUrl = p.ImageUrl
+            }).ToList();
+
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pagination.PageSize);
+
+            var paged = new PageResult<ProductDto>
+            {
+                Items = dtoItems,
+                Metadata = new PaginationMetadata
+                {
+                    CurrentPage = pagination.PageNumber,
+                    PageSize = pagination.PageSize,
+                    TotalCount = totalCount,
+                    TotalPages = totalPages,
+                    HasNext = pagination.PageNumber < totalPages,
+                    HasPrevious = pagination.PageNumber > 1
+                }
+            };
+
+            return GeneralResult<PageResult<ProductDto>>.Success(paged);
+        }
     }
 }
 

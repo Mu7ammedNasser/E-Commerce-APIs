@@ -25,6 +25,13 @@ namespace ECommerce.API.Controllers
             }
             return Ok(result);
         }
+        [HttpGet("paged")]
+        [AllowAnonymous]
+        public async Task<ActionResult<GeneralResult<PageResult<ProductDto>>>> GetPaged([FromQuery] ProductFilterParameters pagination)
+        {
+            var result = await _productManager.GetPagedProductsAsync(pagination);
+            return Ok(result);
+        }
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<GeneralResult<ProductDto>>> GetById(int id)

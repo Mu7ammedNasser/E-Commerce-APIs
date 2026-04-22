@@ -9,6 +9,9 @@ namespace ECommerce.BLL
         Task<GeneralResult<ProductDto>> CreateProductAsync(CreateProductDto createProductDto);
         Task<GeneralResult<ProductDto>> UpdateProductAsync(int id, UpdateProductDto updateProductDto);
         Task<GeneralResult<PatchProductDto>> PatchProductAsync(int id, PatchProductDto dto);
+
+        Task<GeneralResult<PageResult<ProductDto>>> GetPagedProductsAsync(ProductFilterParameters pagination);
+
         Task<GeneralResult> DeleteProductAsync(int id);
     }
 }
