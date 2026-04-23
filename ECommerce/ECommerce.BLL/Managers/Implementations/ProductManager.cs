@@ -22,6 +22,7 @@ namespace ECommerce.BLL
                 Name = P.Name,  
                 Description = P.Description,
                 Price = P.Price,
+                CategoryId = P.CategoryId,
                 ProductsInStock = P.ProductsInStock,
                 ImageUrl = P.ImageUrl
             }).ToList();
@@ -49,6 +50,7 @@ namespace ECommerce.BLL
                 Price = createProductDto.Price,
                 ProductsInStock = createProductDto.ProductsInStock,
                 CategoryId = createProductDto.CategoryId,
+
             };
             await _unitOfWork.ProductsRepository.AddAsync(newProduct);
             await _unitOfWork.SaveAsync();
@@ -78,6 +80,7 @@ namespace ECommerce.BLL
                 Description = product.Description,
                 Price = product.Price,
                 ProductsInStock = product.ProductsInStock,
+                CategoryId = product.CategoryId,
                 ImageUrl = product.ImageUrl
             };
             return GeneralResult<ProductDto>.Success(data);
@@ -98,6 +101,11 @@ namespace ECommerce.BLL
 
         public async Task<GeneralResult<ProductDto>> UpdateProductAsync(int id, UpdateProductDto updateProductDto)
         {
+            var categoryExist = await _unitOfWork.CategoriesRepository.GetByIdAsync(updateProductDto.CategoryId);
+            if (categoryExist == null)
+            {
+                return GeneralResult<ProductDto>.NotFound("Category not found.");
+            }
             var product = await _unitOfWork.ProductsRepository.GetByIdAsync(id);
             if (product == null)
             {
@@ -116,6 +124,7 @@ namespace ECommerce.BLL
                 Description = product.Description,
                 Price = product.Price,
                 ProductsInStock = product.ProductsInStock,
+                CategoryId = product.CategoryId,
                 ImageUrl = product.ImageUrl
             };
             return GeneralResult<ProductDto>.Success(data, "Product updated successfully.");
@@ -157,7 +166,7 @@ namespace ECommerce.BLL
                 Description = product.Description,
                 Price = product.Price,
                 ProductsInStock = product.ProductsInStock,
-                CategoryId = product.CategoryId
+                CategoryId = product.CategoryId,
             };
             return GeneralResult<PatchProductDto>.Success(data, "Product patched successfully.");
         }
@@ -172,6 +181,7 @@ namespace ECommerce.BLL
                 Description = p.Description,
                 Price = p.Price,
                 ProductsInStock = p.ProductsInStock,
+                CategoryId = p.CategoryId,
                 ImageUrl = p.ImageUrl
             }).ToList();
 
