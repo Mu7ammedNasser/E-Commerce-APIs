@@ -68,7 +68,7 @@ namespace ECommerce.API.Controllers
             return Ok(result);
         }
 
-        [HttpDelete()]
+        [HttpDelete("Clear")]
         public async Task<ActionResult<GeneralResult>> ClearCart()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

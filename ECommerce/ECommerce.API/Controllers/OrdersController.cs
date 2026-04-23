@@ -20,9 +20,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<GeneralResult<OrderDto>>> Create([FromBody] CreateOrderDto dto)
+        public async Task<ActionResult<GeneralResult<OrderDto>>> Create()
         {
-            var result = await _orderManager.CreateOrderFromCartAsync(dto);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _orderManager.CreateOrderFromCartAsync(new CreateOrderDto { UserId = userId! });
 
             if (!result.IsSuccess) return BadRequest(result);
             return Ok(result);
