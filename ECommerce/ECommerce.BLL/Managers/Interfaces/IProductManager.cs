@@ -12,6 +12,9 @@ namespace ECommerce.BLL
 
         Task<GeneralResult<PageResult<ProductDto>>> GetPagedProductsAsync(ProductFilterParameters pagination);
 
+        Task<GeneralResult<ProductDto>> SetProductImageAsync(int productId, string imageUrl);
+
+
         Task<GeneralResult> DeleteProductAsync(int id);
     }
 }

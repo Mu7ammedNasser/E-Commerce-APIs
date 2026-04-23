@@ -21,7 +21,7 @@ namespace ECommerce.API.Data
 
             // 2) Admin user
             var adminEmail = "admin@ecommerce.com";
-            var adminPassword = "Admin12345";
+            var adminPassword = " ";
 
             var admin = await userManager.FindByEmailAsync(adminEmail);
             if (admin is null)
@@ -39,6 +39,9 @@ namespace ECommerce.API.Data
                     await userManager.AddToRoleAsync(admin, "Admin");
 
             }
+
+            if (admin is not null && !await userManager.IsInRoleAsync(admin, "Admin"))
+                await userManager.AddToRoleAsync(admin, "Admin");
         }
     }
 } 

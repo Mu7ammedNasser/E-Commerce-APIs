@@ -10,17 +10,20 @@ namespace ECommerce.API.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryManager _categoryManager;
-
-        public CategoriesController(ICategoryManager categoryManager)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IImageManager _imageManager;
+        public CategoriesController(ICategoryManager categoryManager, IWebHostEnvironment webHostEnvironment, IImageManager imageManager)
         {
             _categoryManager = categoryManager;
+            _webHostEnvironment = webHostEnvironment;
+            _imageManager = imageManager;
         }
 
         [HttpGet]
         public async Task<ActionResult<GeneralResult<IEnumerable<CategoryDto>>>> GetAll()
         {
             var result = await _categoryManager.GetAllCategoriesAsync();
-            if(!result.IsSuccess)
+            if (!result.IsSuccess)
                 return BadRequest(result);
             return Ok(result);
         }
@@ -73,6 +76,26 @@ namespace ECommerce.API.Controllers
             if (!result.IsSuccess)
                 return BadRequest(result);
             return Ok(result);
+        }
+
+        [HttpPost("{id:int}/image")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<GeneralResult<PatchCategoryDto>>> SetImage(int id, [FromForm] ImageUploadDto dto)
+        {
+            var basePath = _webHostEnvironment.WebRootPath ?? _webHostEnvironment.ContentRootPath;
+            var schema = Request.Scheme;
+            var host = Request.Host.Value;
+            var uploadResult = await _imageManager.UploadImage(dto, basePath, schema, host);
+            if (!uploadResult.IsSuccess)
+            {
+                return BadRequest(uploadResult);
+            }
+            var imageUrl = uploadResult.Data!.ImageURL;
+            var result = await _categoryManager.SetCategoryImageAsync(id, imageUrl);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return Ok(result);
+
         }
     }
 }

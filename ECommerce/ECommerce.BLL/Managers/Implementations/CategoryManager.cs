@@ -115,6 +115,25 @@ namespace ECommerce.BLL
             await _unitOfWork.SaveAsync();
             return GeneralResult.Success("Category updated successfully.");
         }
+
+        public async Task<GeneralResult<PatchCategoryDto>> SetCategoryImageAsync(int id, string imageUrl)
+        {
+            var category = await _unitOfWork.CategoriesRepository.GetByIdAsync(id);
+
+            if (category == null)
+            {
+                return GeneralResult<PatchCategoryDto>.NotFound(message: "Category not found.");
+            }
+
+            category.ImageUrl = imageUrl;
+            await _unitOfWork.SaveAsync();
+            var data = new PatchCategoryDto
+            {
+                Name = category.Name,
+                Description = category.Description
+            };
+            return GeneralResult<PatchCategoryDto>.Success(data, "Category image updated successfully.");
+        }
     }
 }
 

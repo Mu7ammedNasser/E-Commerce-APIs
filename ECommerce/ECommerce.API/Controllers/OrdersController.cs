@@ -28,12 +28,12 @@ namespace ECommerce.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("user/{userId:alpha}")]
+        [HttpGet("user/{userId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<GeneralResult<IEnumerable<OrderDto>>>> GetOrdersByUserId()
+        public async Task<ActionResult<GeneralResult<IEnumerable<OrderDto>>>> GetOrdersByUserId([FromRoute] string userId)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var result = await _orderManager.GetOrdersByUserIdAsync(userId!);
+            var result = await _orderManager.GetOrdersByUserIdAsync(userId);
+            if (!result.IsSuccess) return NotFound(result);
             return Ok(result);
         }
 

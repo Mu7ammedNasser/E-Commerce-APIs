@@ -4,6 +4,7 @@ using ECommerce.BLL;
 using ECommerce.DAL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 
@@ -64,6 +65,27 @@ namespace ECommerce.API
             builder.Services.AddAuthorization();
 
 
+            var rootPath = builder.Environment.ContentRootPath;
+            var staticFilePath = Path.Combine(rootPath, "Files");
+            if (!Directory.Exists(staticFilePath))
+            {
+                Directory.CreateDirectory(staticFilePath);
+            }
+            builder.Services.Configure<StaticFileOptions>(cfg =>
+            {
+                cfg.FileProvider = new PhysicalFileProvider(staticFilePath);
+                cfg.RequestPath = "/Files";
+            });
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+                });
+            });
 
 
             var app = builder.Build();
@@ -78,9 +100,17 @@ namespace ECommerce.API
             }
 
             app.UseHttpsRedirection();
+  
+            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(staticFilePath),
+                RequestPath = "/Files"
+            });
 
             app.UseAuthentication();
             app.UseAuthorization();
+
 
 
             app.MapControllers();

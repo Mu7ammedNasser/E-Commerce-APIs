@@ -1,10 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 namespace ECommerce.BLL
 {
     public static class BLLServiceExtensions
@@ -14,7 +9,9 @@ namespace ECommerce.BLL
             services.AddScoped<ICategoryManager, CategoryManager>();
             services.AddScoped<IProductManager, ProductManager>();
             services.AddScoped<ICartManager, CartManager>();
-            services.AddScoped<IOrderManager, OrderMnager>();
+            services.AddScoped<IOrderManager, OrderManager>();
+            services.AddScoped<IImageManager, ImageManager>();
+            services.AddScoped<IValidator<ImageUploadDto>, ImageUploadDtoValidators>();
             return services;
         }
 

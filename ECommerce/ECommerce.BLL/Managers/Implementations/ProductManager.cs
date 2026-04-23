@@ -5,7 +5,9 @@ namespace ECommerce.BLL
 {
     public class ProductManager : IProductManager
     {
+
         private readonly IUnitOfWork _unitOfWork;
+
         public ProductManager(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -190,6 +192,27 @@ namespace ECommerce.BLL
             };
 
             return GeneralResult<PageResult<ProductDto>>.Success(paged);
+        }
+
+        public async Task<GeneralResult<ProductDto>> SetProductImageAsync(int productId, string imageUrl)
+        {
+            var product = await _unitOfWork.ProductsRepository.GetByIdAsync(productId);
+            if (product == null)
+            {
+                return GeneralResult<ProductDto>.NotFound("Product not found.");
+            }   
+            product.ImageUrl = imageUrl;
+            await _unitOfWork.SaveAsync();
+            var dto = new ProductDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                ProductsInStock = product.ProductsInStock,
+                ImageUrl = product.ImageUrl
+            };
+            return GeneralResult<ProductDto>.Success(dto, "Product image Added successfully.");
         }
     }
 }

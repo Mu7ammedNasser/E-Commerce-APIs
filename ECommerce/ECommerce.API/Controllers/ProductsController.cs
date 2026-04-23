@@ -1,6 +1,7 @@
 ﻿using ECommerce.BLL;
 using ECommerce.Common;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
@@ -10,10 +11,14 @@ namespace ECommerce.API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductManager _productManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IImageManager _imageManager;  
 
-        public ProductsController(IProductManager productManager)
+        public ProductsController(IProductManager productManager , IWebHostEnvironment webHostEnvironment, IImageManager imageManager)
         {
             _productManager = productManager;
+            _webHostEnvironment = webHostEnvironment;
+            _imageManager = imageManager;
         }
         [HttpGet]
         public async Task<ActionResult<GeneralResult<IEnumerable<ProductDto>>>> GetAll()
@@ -90,6 +95,27 @@ namespace ECommerce.API.Controllers
                 return NotFound($"No product found with id {id}.");
             }
             return Ok(result);
+        }
+
+        [HttpPost("{id:int}/image")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<GeneralResult<ProductDto>>> SetImage(int id, [FromForm] ImageUploadDto dto)
+        {
+            var basePath = _webHostEnvironment.WebRootPath ?? _webHostEnvironment.ContentRootPath;
+            var schema = Request.Scheme;
+            var host = Request.Host.Value;
+
+            var uploadResult = await _imageManager.UploadImage(dto, basePath, schema, host);
+            if (!uploadResult.IsSuccess)
+                return BadRequest(uploadResult);
+
+            var result = await _productManager.SetProductImageAsync(id, uploadResult.Data!.ImageURL);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+
         }
     }
 }

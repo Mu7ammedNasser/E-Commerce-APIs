@@ -4,10 +4,10 @@ using ECommerce.DAL;
 
 namespace ECommerce.BLL
 {
-    public class OrderMnager : IOrderManager
+    public class OrderManager : IOrderManager
     {
         private readonly IUnitOfWork _unitOfWork;
-        public OrderMnager(IUnitOfWork unitOfWork)
+        public OrderManager(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
 
