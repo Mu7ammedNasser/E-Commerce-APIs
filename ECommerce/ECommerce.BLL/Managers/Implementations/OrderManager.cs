@@ -34,6 +34,7 @@ namespace ECommerce.BLL
             Order order = new Order
             {
                 UserId = dto.UserId,
+                OrderDate = DateTime.UtcNow,
                 Status = OrderStatus.Pending,
             };
 
@@ -74,7 +75,7 @@ namespace ECommerce.BLL
 
         public async Task<GeneralResult<OrderDto>> GetOrderByIdAsync(int orderId)
         {
-            var order = await _unitOfWork.OrdersRepository.GetByIdAsync(orderId);
+            var order = await _unitOfWork.OrdersRepository.GetOrderDetailsAsync(orderId);
             if (order == null)
                 return GeneralResult<OrderDto>.NotFound("Order not found");
 

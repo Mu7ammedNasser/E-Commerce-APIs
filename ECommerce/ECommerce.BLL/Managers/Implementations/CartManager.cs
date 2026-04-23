@@ -11,6 +11,7 @@ namespace ECommerce.BLL
             _unitOfWork = unitOfWork;
         }
 
+        // as this cart is author based, we will get the user id from the token and not from the request body, so we will not have any security issue as the user can only access his cart and not other users' carts.
         public async Task<GeneralResult<CartDto>> GetCartByUserIdAsync(string userId)
         {
             var cart = await _unitOfWork.CartsRepository.GetCartByUserIdAsync(userId);

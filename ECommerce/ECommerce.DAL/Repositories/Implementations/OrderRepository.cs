@@ -9,6 +9,7 @@ namespace ECommerce.DAL
         {
             return await _context.Orders
                                  .AsNoTracking()
+                                 .Include(o => o.OrderItems)
                                  .Where(o => o.UserId == userId)
                                  .OrderByDescending(o => o.OrderDate)
                                  .ToListAsync();

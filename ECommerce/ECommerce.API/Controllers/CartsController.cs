@@ -18,7 +18,7 @@ namespace ECommerce.API.Controllers
             _cartManager = cartManager;
         }
 
-        [HttpGet()]
+        [HttpGet]
         public async Task<ActionResult<GeneralResult<IEnumerable<CartDto>>>> GetCart()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
