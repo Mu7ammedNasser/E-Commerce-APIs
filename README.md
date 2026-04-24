@@ -95,3 +95,5 @@ Use `POST /api/Auth/login` to obtain a JWT, then send it as:
 Uploaded images are stored in `ECommerce/ECommerce.API/Files` and served publicly at:
 
 - `GET /Files/<filename>`
+## Testing Videos
+- https://drive.google.com/drive/folders/12w1Rt81AUj0cyODu4nhRuPJdAV6HELub?usp=sharing
